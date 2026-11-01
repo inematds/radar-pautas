@@ -1,0 +1,10 @@
+[Unit]
+Description=radar-pautas — 6 pautas de IA do dia
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+WorkingDirectory=%h/projetos/radar-pautas
+ExecStart=/usr/bin/python3 radar.py --angulos
+TimeoutStartSec=900
+MemoryMax=1G

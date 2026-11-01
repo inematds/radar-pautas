@@ -1,0 +1,11 @@
+# Vem DESLIGADO. Ligar só com OK do Nei:
+#   cp systemd/radar-pautas.* ~/.config/systemd/user/ && systemctl --user daemon-reload && systemctl --user enable --now radar-pautas.timer
+[Unit]
+Description=radar-pautas todo dia às 07:30
+
+[Timer]
+OnCalendar=*-*-* 07:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,27 @@
+{
+  "_nota": "tipo: oficial (empresa que lançou), imprensa, comunidade. peso multiplica a nota. Feeds testados em 01/11/2026; 404/429 ficaram de fora (anthropic, meta-ai, venturebeat, r/singularity).",
+  "ia": [
+    {"nome": "OpenAI", "url": "https://openai.com/news/rss.xml", "tipo": "oficial", "peso": 1.4, "lingua": "en"},
+    {"nome": "Google AI", "url": "https://blog.google/technology/ai/rss/", "tipo": "oficial", "peso": 1.3, "lingua": "en"},
+    {"nome": "Google DeepMind", "url": "https://deepmind.google/blog/rss.xml", "tipo": "oficial", "peso": 1.3, "lingua": "en"},
+    {"nome": "Hugging Face", "url": "https://huggingface.co/blog/feed.xml", "tipo": "oficial", "peso": 1.1, "lingua": "en"},
+    {"nome": "NVIDIA", "url": "https://blogs.nvidia.com/feed/", "tipo": "oficial", "peso": 1.1, "lingua": "en"},
+    {"nome": "Mistral", "url": "https://mistral.ai/rss.xml", "tipo": "oficial", "peso": 1.1, "lingua": "en"},
+    {"nome": "GitHub Blog", "url": "https://github.blog/feed/", "tipo": "oficial", "peso": 1.0, "lingua": "en"},
+    {"nome": "The Verge", "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml", "tipo": "imprensa", "peso": 1.0, "lingua": "en"},
+    {"nome": "TechCrunch", "url": "https://techcrunch.com/category/artificial-intelligence/feed/", "tipo": "imprensa", "peso": 1.0, "lingua": "en"},
+    {"nome": "Ars Technica", "url": "https://arstechnica.com/ai/feed/", "tipo": "imprensa", "peso": 1.0, "lingua": "en"},
+    {"nome": "Wired", "url": "https://www.wired.com/feed/tag/ai/latest/rss", "tipo": "imprensa", "peso": 0.9, "lingua": "en"},
+    {"nome": "The Decoder", "url": "https://the-decoder.com/feed/", "tipo": "imprensa", "peso": 0.9, "lingua": "en"},
+    {"nome": "MarkTechPost", "url": "https://www.marktechpost.com/feed/", "tipo": "imprensa", "peso": 0.7, "lingua": "en"},
+    {"nome": "MIT News", "url": "https://news.mit.edu/rss/topic/artificial-intelligence2", "tipo": "imprensa", "peso": 0.8, "lingua": "en"},
+    {"nome": "Simon Willison", "url": "https://simonwillison.net/atom/everything/", "tipo": "comunidade", "peso": 0.9, "lingua": "en"},
+    {"nome": "Hacker News (150+)", "url": "https://hnrss.org/frontpage?points=150", "tipo": "comunidade", "peso": 1.0, "lingua": "en"},
+    {"nome": "r/LocalLLaMA", "url": "https://www.reddit.com/r/LocalLLaMA/top/.rss?t=day", "tipo": "comunidade", "peso": 0.9, "lingua": "en"},
+    {"nome": "Tecmundo", "url": "https://rss.tecmundo.com.br/feed", "tipo": "imprensa", "peso": 0.8, "lingua": "pt", "filtro": true},
+    {"nome": "Canaltech", "url": "https://canaltech.com.br/rss/", "tipo": "imprensa", "peso": 0.8, "lingua": "pt", "filtro": true},
+    {"nome": "Olhar Digital", "url": "https://olhardigital.com.br/feed/", "tipo": "imprensa", "peso": 0.8, "lingua": "pt", "filtro": true}
+  ],
+  "filtro_ia": ["inteligência artificial", " ia ", "chatgpt", "openai", "gemini", "claude", "anthropic", "llm", "modelo de linguagem", "agente", "nvidia", "deepseek", "copilot", "grok", "robô", "humanoide"],
+  "entidades": ["OpenAI", "ChatGPT", "GPT", "Sora", "Codex", "Anthropic", "Claude", "Google", "Gemini", "DeepMind", "Genie", "Veo", "Meta", "Llama", "Microsoft", "Copilot", "Apple", "Nvidia", "xAI", "Grok", "Tesla", "Optimus", "DeepSeek", "Qwen", "Alibaba", "Kimi", "Moonshot", "Mistral", "Hugging Face", "Hermes", "Cursor", "Perplexity", "Amazon", "AWS", "Figure", "Unitree", "Midjourney", "Runway", "Kling", "ElevenLabs", "HeyGen", "Stability", "Samsung", "IBM", "Intel", "AMD", "TSMC", "Oracle", "SoftBank", "Character.AI", "Windsurf", "GitHub", "Ollama", "LTX", "Flux"]
+}
