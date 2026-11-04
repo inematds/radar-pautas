@@ -278,7 +278,7 @@
 <span class="k">systemctl</span> --user daemon-reload
 <span class="k">systemctl</span> --user enable --now radar-pautas.timer
 <span class="k">systemctl</span> --user list-timers radar-pautas.timer</pre>
-    <p>Un timer de usuario solo se ejecuta mientras tienes una sesión iniciada. Para que se ejecute con la computadora encendida y nadie conectado, activa una vez: <code>loginctl enable-linger $USER</code>. Para desactivarlo: <code>systemctl --user disable --now radar-pautas.timer</code>.</p>
+    <p>Un timer de usuario solo se ejecuta mientras tienes una sesión iniciada. Para que se ejecute con la computadora encendida y nadie conectado, activa una vez: <code>loginctl enable-linger $USER</code>. Para desactivarlo: <code>systemctl --user disable --now radar-pautas.timer</code>. Para ver el resultado o el error de la última ejecución automática: <code>journalctl --user -u radar-pautas -n 50</code>.</p>
   </div></div>
 </div></section>
 
@@ -287,7 +287,7 @@
   <h2>Una ejecución real</h2>
   <p class="sub">Ejecución del 01/11/2026 a las 13:30, con <code>--angulos</code>: 76 noticias de 20 fuentes en las últimas 24 h; Google DeepMind no estuvo disponible ese día.</p>
   <div class="ex">
-    <figure><img src="../assets/exemplo-radar.jpg" alt="Página radar.html con los temas numerados, la puntuación, las fuentes, por qué importa, el gancho y el enlace" loading="lazy"><figcaption><code>radar.html</code>: titular en portugués, título original, puntuación, fuentes, por qué importa, gancho con el formato y enlace verificado.</figcaption></figure>
+    <figure><img src="../assets/exemplo-radar.jpg" alt="Página radar.html con los temas numerados, la puntuación, las fuentes, por qué importa, el gancho y el enlace" loading="lazy"><figcaption>El radar siempre genera su salida en portugués. <code>radar.html</code>: titular en portugués, título original, puntuación, fuentes, por qué importa, gancho con el formato y enlace verificado.</figcaption></figure>
     <div>
 <pre><span class="c"># fragmento de pautas.md</span>
 ## 1. DeepSeek mostra como montar um 'superagente' mais autônomo

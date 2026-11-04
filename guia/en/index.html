@@ -278,7 +278,7 @@
 <span class="k">systemctl</span> --user daemon-reload
 <span class="k">systemctl</span> --user enable --now radar-pautas.timer
 <span class="k">systemctl</span> --user list-timers radar-pautas.timer</pre>
-    <p>A user timer only runs while you’re signed in. To let it run while the computer is on and nobody is signed in, enable this once: <code>loginctl enable-linger $USER</code>. To turn it off: <code>systemctl --user disable --now radar-pautas.timer</code>.</p>
+    <p>A user timer only runs while you’re signed in. To let it run while the computer is on and nobody is signed in, enable this once: <code>loginctl enable-linger $USER</code>. To turn it off: <code>systemctl --user disable --now radar-pautas.timer</code>. To see the result or error of the last automatic run: <code>journalctl --user -u radar-pautas -n 50</code>.</p>
   </div></div>
 </div></section>
 
@@ -287,7 +287,7 @@
   <h2>A real run</h2>
   <p class="sub">Run on 01/11/2026 at 13:30 with <code>--angulos</code>: 76 stories from 20 sources in the past 24 hours; Google DeepMind was down that day.</p>
   <div class="ex">
-    <figure><img src="../assets/exemplo-radar.jpg" alt="radar.html page with numbered stories, scores, sources, why they matter, hooks, and links" loading="lazy"><figcaption><code>radar.html</code>: Portuguese headline, original title, score, sources, why it matters, hook and format, and verified link.</figcaption></figure>
+    <figure><img src="../assets/exemplo-radar.jpg" alt="radar.html page with numbered stories, scores, sources, why they matter, hooks, and links" loading="lazy"><figcaption>The radar always writes its output in Portuguese. <code>radar.html</code>: Portuguese headline, original title, score, sources, why it matters, hook and format, and verified link.</figcaption></figure>
     <div>
 <pre><span class="c"># excerpt from pautas.md</span>
 ## 1. DeepSeek shows how to build a more autonomous “super-agent”

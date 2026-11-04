@@ -278,7 +278,7 @@
 <span class="k">systemctl</span> --user daemon-reload
 <span class="k">systemctl</span> --user enable --now radar-pautas.timer
 <span class="k">systemctl</span> --user list-timers radar-pautas.timer</pre>
-    <p>Um timer de usuário só roda enquanto você está logado. Para rodar com a máquina ligada e ninguém logado, ative uma vez: <code>loginctl enable-linger $USER</code>. Para desligar: <code>systemctl --user disable --now radar-pautas.timer</code>.</p>
+    <p>Um timer de usuário só roda enquanto você está logado. Para rodar com a máquina ligada e ninguém logado, ative uma vez: <code>loginctl enable-linger $USER</code>. Para desligar: <code>systemctl --user disable --now radar-pautas.timer</code>. Para ver o resultado ou o erro da última rodada automática: <code>journalctl --user -u radar-pautas -n 50</code>.</p>
   </div></div>
 </div></section>
 
