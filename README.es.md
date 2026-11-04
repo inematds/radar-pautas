@@ -1,10 +1,16 @@
 # radar-pautas
 
+[![radar-pautas — las 6 pautas de IA del día](guia/assets/banner-es.jpg)](https://inematds.github.io/radar-pautas/guia/es/)
+
 **🇧🇷 [Português](README.md) · 🇺🇸 [English](README.en.md) · 🇪🇸 Español**
 
 ## Qué es
 
 radar-pautas es un script que lee, de una sola vez, unos 20 sitios de noticias sobre inteligencia artificial (blogs de empresas, prensa, Hacker News, Reddit y los proyectos que más estrellas ganaron en GitHub durante la semana) y devuelve los 6 temas más candentes de las últimas 24 horas. Sirve para quienes producen contenido y necesitan decidir rápidamente el tema del día. Reúne la misma noticia publicada en varios sitios, le asigna una puntuación, comprueba si el enlace funciona, avisa si ya hiciste algo parecido y, si lo pides, sugiere un titular, un gancho y un formato en portugués. Necesita Python 3; GitHub CLI (`gh`) y Claude Code son opcionales.
+
+## 📖 Guía de uso
+
+Guía completa (landing + paso a paso): **https://inematds.github.io/radar-pautas/guia/es/**
 
 ## Usar
 

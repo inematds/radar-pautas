@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>radar-pautas — as 6 pautas de IA do dia, com fonte conferida</title>
+<meta name="description" content="Script em Python que lê 20 sites de notícias de IA e o GitHub em alta, junta a mesma notícia, dá nota, confere se o link abre e devolve as 6 pautas do dia, com manchete e gancho em português.">
+<link rel="alternate" hreflang="pt-BR" href="https://inematds.github.io/radar-pautas/guia/">
+<link rel="alternate" hreflang="en" href="https://inematds.github.io/radar-pautas/guia/en/">
+<link rel="alternate" hreflang="es" href="https://inematds.github.io/radar-pautas/guia/es/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c10; --bg2:#14141b; --card:#16161e; --line:#272730;
+    --txt:#e9e9ee; --mut:#9a9aa6; --amb:#FACC15; --amb2:#f0c070; --sky:#38bdf8; --pro:#cbd5e1;
+    color-scheme:dark;
+  }
+  body.light{
+    --bg:#f6f7f9; --bg2:#eceef2; --card:#ffffff; --line:#e1e3ea;
+    --txt:#1a1a22; --mut:#5b5b68; --amb:#a16207; --amb2:#a16207; --sky:#0369a1; --pro:#b45309;
+    color-scheme:light;
+  }
+  body.light .hero .glow{opacity:.5}
+  body.light pre{background:#0e0e14;color:#d6d6e0}
+  body.light pre .c{color:#8a8a98}
+  body.light pre .k{color:#f0c070}
+  body.light .btn,body.light .step .b{background:#FACC15}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:Sora,sans-serif;line-height:1.15;margin:0}
+  a{color:var(--amb);text-decoration:none}
+  code,pre{font-family:"JetBrains Mono",monospace}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+  .mut{color:var(--mut)} .amb{color:var(--amb)}
+  .chip{display:inline-block;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amb);font-weight:600;font-family:Sora}
+  nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:rgba(12,12,16,.78);border-bottom:1px solid var(--line)}
+  body.light nav{background:rgba(246,247,249,.85)}
+  nav .wrap{display:flex;align-items:center;gap:22px;height:60px}
+  nav .brand{display:flex;align-items:center;gap:8px;font-family:Sora;font-weight:800;letter-spacing:-.02em;color:var(--amb)}
+  nav .brand .emoji{font-size:1.25rem}
+  nav .sep{color:var(--mut);opacity:.45}
+  nav .inema{color:var(--sky);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .inema:hover{filter:brightness(1.15)}
+  nav .pro{color:var(--pro);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .pro:hover{filter:brightness(1.15)}
+  nav .clubpro{display:inline-flex;align-items:center;gap:6px}
+  nav .links{margin-left:auto;display:flex;align-items:center;gap:20px;font-size:.92rem}
+  nav .links a.sec{color:var(--mut)} nav .links a.sec:hover{color:var(--txt)}
+  .lang{display:inline-flex;gap:2px;font-family:Sora;font-size:.78rem}
+  .lang a{color:var(--mut);padding:.2em .45em;border-radius:6px} .lang a.on{color:var(--amb);background:rgba(250,204,21,.12)}
+  .tgl{background:var(--bg2);border:1px solid var(--line);color:var(--txt);width:38px;height:38px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem}
+  .tgl:hover{border-color:var(--amb)}
+  .btn{display:inline-block;background:var(--amb);color:#1a1206;font-weight:600;padding:.6em 1.05em;border-radius:10px;font-family:Sora}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  @media(max-width:760px){nav .links a.sec{display:none}}
+  @media(max-width:520px){nav .wrap{gap:8px;padding:8px 14px;height:auto;flex-wrap:wrap} nav .links{gap:8px;margin-left:0;width:100%;justify-content:space-between} nav .btn{padding:.45em .7em;font-size:.82rem} .tgl{width:34px;height:34px}}
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero .glow{position:absolute;inset:-40% -20% auto auto;width:70%;height:600px;background:radial-gradient(closest-side,rgba(250,204,21,.18),transparent 70%);pointer-events:none}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:74px 22px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.025em}
+  .hero p.lead{font-size:1.18rem;color:var(--mut);margin:1.1em 0 1.6em;max-width:34ch}
+  .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero figure{margin:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000}
+  .hero figure img{width:100%;height:auto;display:block}
+  .resumo{padding:38px 0 34px;border-bottom:1px solid var(--line)}
+  .resumo p{font-size:1.12rem;line-height:1.7;max-width:74ch;margin:.55em 0 0}
+  @media(max-width:780px){.hero .wrap{grid-template-columns:1fr;padding:48px 22px}}
+  section{padding:62px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.02em}
+  section .sub{color:var(--mut);margin:.6em 0 2em;max-width:62ch}
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:820px){.g3,.g4{grid-template-columns:1fr 1fr}}
+  @media(max-width:540px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{font-size:1.05rem;margin-bottom:.4em}
+  .card p{color:var(--mut);font-size:.92rem;margin:0 0 .6em}
+  .card p:last-child{margin-bottom:0}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 28px}
+  .flow span{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:.45em .9em;font-size:.85rem;font-family:Sora;font-weight:600}
+  .flow .arr{color:var(--amb);border:none;background:none;padding:0 .1em}
+  pre{background:#0a0a0e;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow:auto;font-size:.86rem;line-height:1.6;color:#d6d6e0;margin:.4em 0 .8em}
+  pre .c{color:#7d7d8a} pre .k{color:var(--amb2)} pre .s{color:#9ece6a}
+  .step{display:grid;grid-template-columns:46px minmax(0,1fr);gap:16px;margin-bottom:26px}
+  .step>div,.card{min-width:0}
+  p code,li code,td code{overflow-wrap:anywhere}
+  .step .b{width:46px;height:46px;border-radius:12px;background:var(--amb);color:#1a1206;font-family:Sora;font-weight:800;font-size:1.25rem;display:flex;align-items:center;justify-content:center}
+  .step h3{font-size:1.12rem;margin-bottom:.3em}
+  .step p{color:var(--mut);margin:.2em 0 .7em}
+  .tbl{width:100%;border-collapse:collapse;font-size:.92rem;margin:.3em 0 .8em}
+  .tbl td,.tbl th{border-bottom:1px solid var(--line);padding:.5em .6em;text-align:left;vertical-align:top}
+  .tbl th{font-family:Sora;font-size:.8rem;color:var(--mut);font-weight:600}
+  .tbl td:first-child{white-space:nowrap}
+  .ex{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+  .ex>*{min-width:0}
+  @media(max-width:780px){.ex{grid-template-columns:minmax(0,1fr)}}
+  .ex figure{margin:0;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+  .ex figure img{width:100%;height:auto;display:block}
+  .ex figcaption{padding:12px 14px;font-size:.88rem;color:var(--mut);background:var(--card)}
+  .phase{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .phase:last-child{border:none}
+  .phase .tag{flex:0 0 92px;font-family:Sora;font-weight:800;color:var(--amb)}
+  .phase .d strong{display:block;margin-bottom:.2em}
+  .phase .d span{color:var(--mut);font-size:.92rem}
+  footer{padding:46px 0;text-align:center;color:var(--mut);font-size:.9rem}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.3em .8em;font-size:.78rem;color:var(--mut);margin:4px}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="#top"><span class="emoji">📡</span> radar-pautas</a>
+  <span class="sep">|</span>
+  <span class="clubpro">
+    <a class="inema" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
+    <span class="sep">-</span>
+    <a class="pro" href="https://inema.pro" target="_blank" rel="noopener">PRO</a>
+  </span>
+  <div class="links">
+    <a class="sec" href="#oque">O que é</a>
+    <a class="sec" href="#fluxo">Como funciona</a>
+    <a class="sec" href="#guia">Guia de uso</a>
+    <a class="sec" href="#exemplos">Exemplo</a>
+    <a class="sec" href="#roadmap">Limites</a>
+    <span class="lang"><a class="on" href="./">PT</a><a href="en/">EN</a><a href="es/">ES</a></span>
+    <button class="tgl" id="themeToggle" aria-label="Alternar tema" title="Alternar tema">🌙</button>
+    <a class="btn" href="https://github.com/inematds/radar-pautas" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div></nav>
+
+<header class="hero" id="top">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div>
+      <span class="chip">Script em Python · pauta de IA do dia</span>
+      <h1>As 6 <span class="amb">pautas</span> de IA do dia, com a fonte conferida</h1>
+      <p class="lead">Um comando lê 20 fontes (blogs das empresas, imprensa e fóruns) e o GitHub em alta e devolve o que está quente agora, cada pauta com um link que abre e, se você pedir, manchete e gancho em português.</p>
+      <div class="cta">
+        <a class="btn" href="#guia">Começar o guia</a>
+        <a class="btn ghost" href="https://github.com/inematds/radar-pautas" target="_blank" rel="noopener">Ver no GitHub</a>
+      </div>
+    </div>
+    <figure><img src="assets/banner.jpg" alt="Banner do radar-pautas: as 6 pautas de IA do dia, com fonte conferida"></figure>
+  </div>
+</header>
+
+<section id="resumo" class="resumo"><div class="wrap">
+  <span class="chip">Em resumo</span>
+  <p>O radar-pautas é um script (um pequeno programa que você roda no terminal) que lê, de uma vez, cerca de 20 sites de notícias de inteligência artificial e os projetos que mais ganharam estrelas no GitHub na semana, e devolve as 6 pautas mais quentes das últimas 24 horas. Serve para quem produz conteúdo e precisa decidir rápido o assunto do dia. Ele junta a mesma notícia vinda de vários sites, dá uma nota, confere se o link abre e, se você pedir, sugere manchete, gancho e formato em português. Precisa só de Python 3; o GitHub CLI e o Claude Code são opcionais.</p>
+</div></section>
+
+<section id="oque"><div class="wrap">
+  <span class="chip">O que é</span>
+  <h2>Da enxurrada de notícias a uma lista curta</h2>
+  <p class="sub">Em vez de abrir 20 abas toda manhã, você roda um comando e recebe 6 assuntos já ordenados. A imagem resume as 6 etapas principais; a seção seguinte mostra o caminho completo.</p>
+  <figure style="margin:0 0 26px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000"><img src="assets/banner-grade.jpg" alt="As seis etapas: lê 20 fontes, junta a mesma notícia, dá nota, confere o link, vê se já foi feito e sugere o ângulo" loading="lazy" style="width:100%;display:block"></figure>
+  <div class="grid g3">
+    <div class="card"><h3>📰 Mesma notícia, um assunto só</h3><p>Quando três sites falam do mesmo lançamento, o radar junta tudo numa pauta e dá mais pontos a ela. Notícia que aparece em vários lugares sobe; notícia de um site só fica mais abaixo.</p></div>
+    <div class="card"><h3>🔗 Só entra link que abre</h3><p>Antes de mostrar, ele abre o link de cada pauta. Se a página não responde "ok" (o código 200 da internet), tenta outro site do mesmo assunto; se nenhum abrir, a pauta fica de fora.</p></div>
+    <div class="card"><h3>💡 Ângulo pronto para gravar</h3><p>Com <code>--angulos</code>, o Claude Code sugere para cada pauta uma manchete em português, por que ela importa, a frase de abertura e o formato. É sugestão: o número e o fato você confere na fonte.</p></div>
+  </div>
+</div></section>
+
+<section id="fluxo"><div class="wrap">
+  <span class="chip">Como funciona</span>
+  <h2>O caminho de uma rodada</h2>
+  <p class="sub">Tudo roda no seu computador. Só lê páginas públicas (os feeds RSS dos sites, a lista de novidades que cada site publica) e o GitHub pelo programa <code>gh</code>. Nenhuma chave de API.</p>
+  <div class="flow">
+    <span>Lê 20 feeds + GitHub</span><span class="arr">→</span>
+    <span>Fica com as últimas 24 h</span><span class="arr">→</span>
+    <span>Junta a mesma notícia</span><span class="arr">→</span>
+    <span>Dá nota</span><span class="arr">→</span>
+    <span>Confere o link</span><span class="arr">→</span>
+    <span>Já fizemos?</span><span class="arr">→</span>
+    <span>Ângulo (opcional)</span><span class="arr">→</span>
+    <span>pautas.md + radar.html</span>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>As fontes</h3><p>Ficam no arquivo <code>fontes.json</code>: blogs da OpenAI, Google AI, Google DeepMind, Hugging Face, NVIDIA, Mistral e GitHub; imprensa (The Verge, TechCrunch, Ars Technica, Wired, The Decoder, MarkTechPost, MIT News); Simon Willison, Hacker News (só o que passou de 150 pontos) e o fórum r/LocalLLaMA do Reddit. Tecmundo, Canaltech e Olhar Digital entram filtrados por palavras de IA. Os feeds são lidos ao mesmo tempo; se um site pede para esperar, o radar espera 8 segundos e tenta de novo uma vez.</p></div>
+    <div class="card"><h3>GitHub em alta</h3><p>Se o <code>gh</code> estiver instalado e com login, o radar busca repositórios criados nos últimos 7 dias com os termos <code>llm</code>, <code>agent</code> e <code>ai</code>, ordenados por estrelas, e só aproveita os que têm 300 estrelas (as "curtidas" do GitHub) ou mais. Sem o <code>gh</code>, essa parte só fica vazia; o resto funciona.</p></div>
+    <div class="card"><h3>A nota</h3><p>Cada site a mais falando do assunto vale 3 pontos; a notícia mais nova ganha até 2; fonte oficial (a empresa que lançou) soma 1,5; citar empresa ou produto conhecido soma 0,8; repositório do GitHub soma até 1,5 pelas estrelas. O total é multiplicado pelo peso da fonte, que está no <code>fontes.json</code>.</p></div>
+    <div class="card"><h3>Variedade</h3><p>No máximo 2 pautas da mesma empresa e 2 vindas só do mesmo site. Assim a lista não vira "6 notícias da OpenAI".</p></div>
+  </div>
+</div></section>
+
+<section id="pre"><div class="wrap">
+  <span class="chip">Pré-requisitos</span>
+  <h2>O que precisa estar na máquina</h2>
+  <p class="sub">Linux ou Mac (no Windows, pelo WSL, o Linux que roda dentro do Windows). Só o Python é obrigatório.</p>
+  <div class="grid g3">
+    <div class="card"><h3>Python 3 e git (obrigatórios)</h3><p>O radar usa só o que já vem com o Python: não há nada para instalar com <code>pip</code> (o instalador de pacotes do Python). O git baixa o projeto. Confira se os dois existem:</p><pre><span class="k">python3</span> --version && <span class="k">git</span> --version</pre></div>
+    <div class="card"><h3>GitHub CLI (opcional)</h3><p>O <code>gh</code> é o programa do GitHub para o terminal. Ele traz os repositórios em alta. Instale (Ubuntu: <code>sudo apt install gh</code>; Mac: <code>brew install gh</code>) e entre na sua conta uma vez:</p><pre><span class="k">gh</span> auth login</pre></div>
+    <div class="card"><h3>Claude Code (opcional)</h3><p>Só para o <code>--angulos</code>. O radar chama o <code>claude -p</code> pela sua assinatura e tira do ambiente a <code>ANTHROPIC_API_KEY</code> antes de chamar, para nunca cobrar por API. Instalação em <a href="https://claude.com/claude-code" target="_blank" rel="noopener">claude.com/claude-code</a>.</p><pre><span class="k">claude</span> --version</pre></div>
+  </div>
+</div></section>
+
+<section id="guia"><div class="wrap">
+  <span class="chip">Guia de uso · passo a passo</span>
+  <h2>Do zero às pautas de hoje</h2>
+  <p class="sub">Comandos copiáveis, na ordem.</p>
+
+  <div class="step"><div class="b">1</div><div>
+    <h3>Baixe o projeto</h3>
+    <p>Copia o radar para a pasta <code>~/projetos/radar-pautas</code> (o <code>~</code> é a sua pasta pessoal) e entra nela.</p>
+<pre><span class="k">git clone</span> <span class="s">https://github.com/inematds/radar-pautas</span> ~/projetos/radar-pautas
+<span class="k">cd</span> ~/projetos/radar-pautas</pre>
+  </div></div>
+
+  <div class="step"><div class="b">2</div><div>
+    <h3>Dê uma primeira olhada (sem gravar nada)</h3>
+    <p>O <code>--dry</code> faz a rodada inteira (em geral, menos de um minuto) e só mostra o resultado na tela. Cada pauta vem com a nota entre colchetes, as fontes, há quantas horas saiu, o código do link (200 = abriu) e o endereço. No fim, quantas notícias leu e quais sites ficaram fora do ar nessa rodada.</p>
+<pre><span class="k">python3</span> radar.py --dry</pre>
+<pre><span class="c"># o formato de cada pauta na tela:</span>
+1. [9.23] DeepSeek: Exploring Super-agent Design: Towards a More Autonomous Agent System
+   3 fonte(s): GitHub em alta, MarkTechPost, r/LocalLLaMA · 3.9 h · 200 https://www.reddit.com/r/LocalLLaMA/...</pre>
+  </div></div>
+
+  <div class="step"><div class="b">3</div><div>
+    <h3>Grave as pautas com o ângulo em português</h3>
+    <p>Sem o <code>--dry</code>, o radar grava os arquivos. Com <code>--angulos</code>, cada pauta ganha manchete, "por que importa", gancho (a frase de abertura de um vídeo curto), formato sugerido e uma palavra para pedir nos comentários. Os formatos são os que o INEMA usa: <b>r7ex</b> (reel curto vertical), <b>explicavideo</b> (vídeo explicativo) e <b>carrossel</b> (post de várias imagens). Sem o Claude Code, o radar mostra <code>aviso: ângulos não gerados</code> e grava as pautas sem o ângulo. Se as pautas vierem sem manchete em português, abra o Claude Code uma vez (comando <code>claude</code>) para entrar na sua conta e rode de novo.</p>
+<pre><span class="k">python3</span> radar.py --angulos</pre>
+    <p>Se saírem menos de 3 pautas (rede fora do ar ou dia fraco), o comando termina com erro; rode mais tarde ou aumente a janela com <code>--horas 48</code>.</p>
+  </div></div>
+
+  <div class="step"><div class="b">4</div><div>
+    <h3>Abra o resultado</h3>
+    <p>Fica numa pasta com a data do dia: <code>radar.html</code> (para abrir no navegador), <code>pautas.md</code> (texto) e <code>pautas.json</code> (para outro programa ler). Para gravar em outro lugar, rode com <code>RADAR_SAIDA=/outra/pasta</code> na frente do comando.</p>
+<pre><span class="k">ls</span> ~/projetos/output/radar-pautas/
+<span class="k">xdg-open</span> ~/projetos/output/radar-pautas/$(date +%F)/radar.html   <span class="c"># no Mac: open</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">5</div><div>
+    <h3>Ajuste a janela e a quantidade</h3>
+    <p>As opções podem ser combinadas.</p>
+    <table class="tbl">
+      <tr><th>Opção</th><th>O que faz</th></tr>
+      <tr><td><code>--horas 48</code></td><td>janela de tempo em horas (padrão 24)</td></tr>
+      <tr><td><code>--n 8</code></td><td>quantas pautas (padrão 6)</td></tr>
+      <tr><td><code>--angulos</code></td><td>manchete, por que importa, gancho, formato e palavra, pelo Claude Code</td></tr>
+      <tr><td><code>--sem-github</code></td><td>não busca os repositórios em alta</td></tr>
+      <tr><td><code>--dry</code></td><td>só mostra na tela, não grava</td></tr>
+    </table>
+<pre><span class="k">python3</span> radar.py --horas 48 --n 8</pre>
+  </div></div>
+
+  <div class="step"><div class="b">6</div><div>
+    <h3>Troque ou acrescente fontes</h3>
+    <p>Abra o <code>fontes.json</code> num editor de texto. Cada site é uma linha, dentro da lista <code>"ia"</code>. <code>tipo</code> pode ser <code>oficial</code>, <code>imprensa</code> ou <code>comunidade</code>; <code>peso</code> multiplica a nota. Antes de pôr um site novo, abra o endereço do feed no navegador e veja se ele mostra a lista de notícias. Depois de editar, o primeiro comando abaixo confere se o arquivo continua válido (uma vírgula a mais quebra tudo) e o segundo testa a rodada.</p>
+<pre><span class="k">python3</span> -m json.tool fontes.json > /dev/null && <span class="k">echo</span> ok
+<span class="k">python3</span> radar.py --dry</pre>
+<pre>{<span class="s">"nome"</span>: <span class="s">"The Verge"</span>, <span class="s">"url"</span>: <span class="s">"https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"</span>, <span class="s">"tipo"</span>: <span class="s">"imprensa"</span>, <span class="s">"peso"</span>: 1.0, <span class="s">"lingua"</span>: <span class="s">"en"</span>}</pre>
+  </div></div>
+
+  <div class="step"><div class="b">7</div><div>
+    <h3>Aviso de "já fizemos" (opcional)</h3>
+    <p>O radar procura, nas últimas 200 linhas de um arquivo de produções, uma linha que cite a mesma empresa e pelo menos 2 palavras do título; achando, a pauta ganha o aviso "Já fizemos algo parecido". O caminho vem fixo no código como <code>~/projetos/wifi/PRODUCOES-VIDEO.md</code>, o arquivo do INEMA. Se ele não existe na sua máquina, o aviso simplesmente não aparece. Para usar o seu, troque o caminho na linha que começa com <code>PRODUCOES =</code> no <code>radar.py</code> e escreva no arquivo uma linha por vídeo publicado. Só contam palavras com 6 letras ou mais, e palavras genéricas (agent, model, skill, claude, openai, google, release) são ignoradas; por isso cite na linha o nome da empresa e as palavras fortes do título original da notícia (quase sempre em inglês), como no exemplo, que dispara o aviso para a pauta 1 do exemplo abaixo.</p>
+<pre><span class="c"># exemplo de linha no arquivo de produções</span>
+04/11 · DeepSeek super-agent design autonomous · explicavideo publicado</pre>
+<pre><span class="k">grep</span> -n <span class="s">"^PRODUCOES ="</span> radar.py</pre>
+  </div></div>
+
+  <div class="step"><div class="b">8</div><div>
+    <h3>Use pelo Claude Code (opcional)</h3>
+    <p>Uma skill é um arquivo de instruções que o Claude Code carrega sozinho quando você pede algo parecido. O projeto traz a sua, o <code>SKILL.md</code>: com ela ligada, basta pedir as pautas na conversa. O Claude roda o radar, mostra as 6 pautas e pergunta quais viram vídeo; nada é produzido sem você escolher. Feche e abra o Claude Code depois do comando.</p>
+<pre><span class="k">mkdir -p</span> ~/.claude/skills
+<span class="k">ln -s</span> ~/projetos/radar-pautas ~/.claude/skills/radar-pautas</pre>
+<pre><span class="s">quais são as pautas de hoje?</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">9</div><div>
+    <h3>Rodar todo dia às 07:30 (opcional, Linux)</h3>
+    <p>A pasta <code>systemd/</code> traz um agendamento pronto (um timer do systemd, o relógio de tarefas do Linux) que roda <code>radar.py --angulos</code> todo dia às 07:30. Ele vem desligado: só funciona depois que você copiar e ligar. Ele espera o projeto em <code>~/projetos/radar-pautas</code>. Os comandos copiam o agendamento, fazem o systemd reler os arquivos (<code>daemon-reload</code>), ligam o timer já valendo (<code>enable --now</code>) e mostram quando será a próxima rodada.</p>
+<pre><span class="k">mkdir -p</span> ~/.config/systemd/user
+<span class="k">cp</span> systemd/radar-pautas.* ~/.config/systemd/user/
+<span class="k">systemctl</span> --user daemon-reload
+<span class="k">systemctl</span> --user enable --now radar-pautas.timer
+<span class="k">systemctl</span> --user list-timers radar-pautas.timer</pre>
+    <p>Um timer de usuário só roda enquanto você está logado. Para rodar com a máquina ligada e ninguém logado, ative uma vez: <code>loginctl enable-linger $USER</code>. Para desligar: <code>systemctl --user disable --now radar-pautas.timer</code>.</p>
+  </div></div>
+</div></section>
+
+<section id="exemplos"><div class="wrap">
+  <span class="chip">Exemplo</span>
+  <h2>Uma rodada de verdade</h2>
+  <p class="sub">Rodada de 01/11/2026 às 13:30, com <code>--angulos</code>: 76 notícias de 20 fontes nas últimas 24 h, Google DeepMind fora do ar nesse dia.</p>
+  <div class="ex">
+    <figure><img src="assets/exemplo-radar.jpg" alt="Página radar.html com as pautas numeradas, nota, fontes, por que importa, gancho e link" loading="lazy"><figcaption>O <code>radar.html</code>: manchete em português, título original, nota, fontes, por que importa, gancho com o formato e o link conferido.</figcaption></figure>
+    <div>
+<pre><span class="c"># trecho do pautas.md</span>
+## 1. DeepSeek mostra como montar um 'superagente' mais autônomo
+
+- Nota 9.23 · fontes (3): GitHub em alta,
+  MarkTechPost, r/LocalLLaMA · 3.9 h atrás
+- Link (200): https://www.reddit.com/r/
+  LocalLLaMA/comments/1xl1zn3/...
+- Outras fontes: marktechpost.com/... ·
+  github.com/deepseek-ai/dsh-superagent-prototype
+- Por que importa: Ajuda a entender para onde
+  caminham os assistentes de IA que fazem
+  tarefas sozinhos, sem você guiar cada passo.
+- Gancho: A DeepSeek abriu o projeto do agente
+  que trabalha sozinho.
+- Formato: explicavideo · palavra: superagente</pre>
+      <p class="mut" style="font-size:.92rem">A pauta 1 juntou três sites diferentes (um fórum, um site de notícias e o repositório no GitHub) e por isso ficou bem à frente da segunda, que teve 5,13 pontos.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+  <span class="chip">Limites e próximos passos</span>
+  <h2>O que ele faz bem e onde tropeça</h2>
+  <p class="sub">Versão 1.0, de 01/11/2026.</p>
+  <div class="phase"><div class="tag">1.0 ✔</div><div class="d"><strong>Coleta, nota, link conferido e ângulo</strong><span>20 feeds públicos + GitHub em alta, mesma notícia agrupada, variedade, aviso de "já fizemos", saída em md, json e html, timer diário pronto e desligado.</span></div></div>
+  <div class="phase"><div class="tag">Limite</div><div class="d"><strong>Feed fora do ar</strong><span>Sites caem de vez em quando (um por rodada é normal). O resultado diz quais ficaram de fora.</span></div></div>
+  <div class="phase"><div class="tag">Limite</div><div class="d"><strong>Agrupamento por palavras do título</strong><span>Às vezes junta de menos: duas manchetes muito diferentes sobre o mesmo fato podem virar duas pautas.</span></div></div>
+  <div class="phase"><div class="tag">Limite</div><div class="d"><strong>O ângulo só vê título e resumo</strong><span>Número e fato vêm sempre da fonte aberta, nunca do ângulo sugerido.</span></div></div>
+  <div class="phase"><div class="tag">Depois</div><div class="d"><strong>Da pauta ao conteúdo</strong><span>A pauta escolhida segue para um reel, um vídeo explicativo ou um carrossel, com o link do radar como fonte dos fatos.</span></div></div>
+</div></section>
+
+<footer>
+  <div class="wrap">
+    <div class="pill">Python 3 (sem dependências)</div><div class="pill">RSS público</div><div class="pill">GitHub CLI</div><div class="pill">Claude Code (opcional)</div>
+    <p style="margin-top:18px">radar-pautas · código MIT ·
+      <a href="https://github.com/inematds/radar-pautas">inematds/radar-pautas</a> ·
+      <a href="https://inema.club">INEMA.CLUB</a></p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var KEY='radar-pautas-theme';
+    var b=document.body, t=document.getElementById('themeToggle');
+    if(localStorage.getItem(KEY)==='light'){ b.classList.add('light'); t.textContent='☀️'; }
+    t.addEventListener('click',function(){
+      var light=b.classList.toggle('light');
+      t.textContent=light?'☀️':'🌙';
+      localStorage.setItem(KEY, light?'light':'dark');
+    });
+  })();
+</script>
+</body>
+</html>

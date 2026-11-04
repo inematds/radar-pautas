@@ -1,10 +1,16 @@
 # radar-pautas
 
+[![radar-pautas — today's 6 AI stories](guia/assets/banner-en.jpg)](https://inematds.github.io/radar-pautas/guia/en/)
+
 **🇧🇷 [Português](README.md) · 🇺🇸 English · 🇪🇸 [Español](README.es.md)**
 
 ## What it is
 
 radar-pautas is a script that reads about 20 artificial intelligence news sites at once (company blogs, press, Hacker News, Reddit, and the projects that gained the most stars on GitHub that week) and returns the 6 hottest topics from the past 24 hours. It is for people who create content and need to quickly decide what to cover today. It combines the same story from multiple sites, scores it, checks whether the link opens, warns you if you have already made something similar, and, if asked, suggests a headline, hook, and format in Portuguese. It requires Python 3; the GitHub CLI (`gh`) and Claude Code are optional.
+
+## 📖 User guide
+
+Full guide (landing + step by step): **https://inematds.github.io/radar-pautas/guia/en/**
 
 ## Use
 
